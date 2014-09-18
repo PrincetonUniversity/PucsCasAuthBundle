@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="pucs.cas_auth.server.version"/>
+        <parameter key="pucs.cas_auth.server.login_url"/>
+        <parameter key="pucs.cas_auth.server.logout_url"/>
+        <parameter key="pucs.cas_auth.server.validate_url"/>
+    </parameters>
+    <services>
+        <service id="pucs.cas_auth.security.authentication.provider" class="Pucs\CasAuthBundle\Security\Authentication\Provider\CasAuthenticationProvider">
+            <argument type="service" id="pucs.cas_auth.server"/>
+            <argument/>
+        </service>
+        <service id="pucs.cas_auth.security.authentication.listener" class="Pucs\CasAuthBundle\Security\Firewall\CasListener" parent="security.authentication.listener.abstract" abstract="true">
+        </service>
+        <service id="pucs.cas_auth.security.authentication.entry_point" class="Pucs\CasAuthBundle\Security\EntryPoint\CasEntryPoint" abstract="true" public="false">
+            <argument type="service" id="pucs.cas_auth.server"/>
+            <!-- $casFactoryConfig -->
+        </service>
+        <service id="pucs.cas_auth.server" class="Pucs\CasAuthBundle\Cas\Server">
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="router"/>
+            <argument>%pucs.cas_auth.server.version%</argument>
+            <argument>%pucs.cas_auth.server.login_url%</argument>
+            <argument>%pucs.cas_auth.server.logout_url%</argument>
+            <argument>%pucs.cas_auth.server.validate_url%</argument>
+        </service>
+    </services>
+</container>

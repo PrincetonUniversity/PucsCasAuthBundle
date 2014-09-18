@@ -1,0 +1,18 @@
+{
+    "name": "pucs/cas-auth-bundle",
+    "type": "symfony-bundle",
+    "description": "CAS authentication provider for Symfony2.",
+    "keywords": ["sso", "cas", "authentication"],
+    "homepage": "https://github.com/PrincetonUniversity/PucsCasAuthBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Brian Osborne",
+            "email": "bosborne@cs.princeton.edu"
+        }
+    ],
+    "require": {
+        "php": ">5.3.0",
+        "sensio/buzz-bundle": "1.0.*"
+    }
+}
