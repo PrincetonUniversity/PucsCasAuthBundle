@@ -13,6 +13,9 @@ use Buzz\Message\Request;
 use Buzz\Client\Curl;
 use Buzz\Message\Response;
 
+/**
+ * Class CasAuthenticationProviderer
+ */
 class CasAuthenticationProvider implements AuthenticationProviderInterface
 {
     /**
@@ -26,7 +29,7 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
     private $casServer;
 
     /**
-     * @param Server $casServer
+     * @param Server                $casServer
      * @param UserProviderInterface $userProvider
      */
     public function __construct(Server $casServer, UserProviderInterface $userProvider)
@@ -65,7 +68,7 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
     /**
      * Validate the service ticket that CAS server has provided.
      *
-     * @param string $ticket The authentication ticket provided by CAS server.
+     * @param string $ticket    The authentication ticket provided by CAS server.
      * @param string $checkPath The check path.
      *
      * @return mixed The username of the person if auth was success, or null otherwise.

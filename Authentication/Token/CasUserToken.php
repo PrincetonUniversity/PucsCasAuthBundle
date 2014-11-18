@@ -4,6 +4,9 @@ namespace Pucs\CasAuthBundle\Authentication\Token;
 
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
+/**
+ * Class CasUserToken
+ */
 class CasUserToken extends AbstractToken
 {
     /**
@@ -19,7 +22,7 @@ class CasUserToken extends AbstractToken
     /**
      * @param string $serviceTicket
      * @param string $checkPath
-     * @param array $roles
+     * @param array  $roles
      */
     public function __construct($serviceTicket, $checkPath, array $roles = array())
     {

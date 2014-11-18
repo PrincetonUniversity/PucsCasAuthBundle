@@ -6,6 +6,9 @@ use Pucs\CasAuthBundle\Authentication\Token\CasUserToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
 
+/**
+ * Class CasListener
+ */
 class CasListener extends AbstractAuthenticationListener
 {
     /**

@@ -6,6 +6,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Class Server
+ */
 class Server
 {
     /**
@@ -39,12 +42,12 @@ class Server
     protected $validateUrl;
 
     /**
-     * @param RequestStack $requestStack
+     * @param RequestStack    $requestStack
      * @param RouterInterface $router
-     * @param $version
-     * @param $loginUrl
-     * @param $logoutUrl
-     * @param $validateUrl
+     * @param int             $version
+     * @param string          $loginUrl
+     * @param string          $logoutUrl
+     * @param string          $validateUrl
      */
     public function __construct(RequestStack $requestStack, RouterInterface $router, $version, $loginUrl, $logoutUrl, $validateUrl)
     {
@@ -59,7 +62,8 @@ class Server
     /**
      * The login URL of the CAS server with the service URL attached.
      *
-     * @param $checkPath string
+     * @param string $checkPath
+     *
      * @return string
      */
     public function getLoginUrl($checkPath)
@@ -72,7 +76,8 @@ class Server
     /**
      * The logout URL of the CAS server with the service URL attached.
      *
-     * @param $checkPath string
+     * @param string $checkPath
+     *
      * @return string
      */
     public function getLogoutUrl($checkPath)
@@ -83,7 +88,8 @@ class Server
     /**
      * The validation URL of the CAS server with the service URL attached.
      *
-     * @param $checkPath string
+     * @param string $checkPath
+     *
      * @return string
      */
     public function getValidateUrl($checkPath)
@@ -94,7 +100,8 @@ class Server
     /**
      * Generate the path to our service URL, which is the path that the Security component uses for authentication.
      *
-     * @param $checkPath
+     * @param string $checkPath
+     *
      * @return string
      */
     private function getServiceUrl($checkPath)
@@ -105,6 +112,7 @@ class Server
         } else {
             $path = $this->requestStack->getCurrentRequest()->getUriForPath($checkPath);
         }
+
         return $path;
     }
 }

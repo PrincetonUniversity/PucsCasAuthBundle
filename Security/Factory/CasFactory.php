@@ -7,6 +7,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class CasFactory
+ */
 class CasFactory extends AbstractFactory
 {
     /**
@@ -18,8 +21,7 @@ class CasFactory extends AbstractFactory
 
         $container
             ->setDefinition($providerId, new DefinitionDecorator('pucs.cas_auth.security.authentication.provider'))
-            ->replaceArgument(1, new Reference($userProvider))
-        ;
+            ->replaceArgument(1, new Reference($userProvider));
 
         return $providerId;
     }
@@ -43,17 +45,22 @@ class CasFactory extends AbstractFactory
         // in the factory config as an additional argument.
         $container
             ->setDefinition($entryPointId, new DefinitionDecorator('pucs.cas_auth.security.authentication.entry_point'))
-            ->addArgument($config)
-        ;
+            ->addArgument($config);
 
         return $entryPointId;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getPosition()
     {
         return 'pre_auth';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getKey()
     {
         return 'cas';

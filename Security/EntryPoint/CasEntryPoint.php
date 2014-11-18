@@ -8,6 +8,9 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+/**
+ * Class CasEntryPoint
+ */
 class CasEntryPoint implements AuthenticationEntryPointInterface
 {
     /**
@@ -22,7 +25,7 @@ class CasEntryPoint implements AuthenticationEntryPointInterface
 
     /**
      * @param Server $casServer
-     * @param array $config
+     * @param array  $config
      */
     public function __construct(Server $casServer, array $config)
     {
