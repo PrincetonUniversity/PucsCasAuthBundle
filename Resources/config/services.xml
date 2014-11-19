@@ -10,8 +10,10 @@
     </parameters>
     <services>
         <service id="pucs.cas_auth.security.authentication.provider" class="Pucs\CasAuthBundle\Security\Authentication\Provider\CasAuthenticationProvider">
+            <argument type="service" id="guzzle.client"/>
             <argument type="service" id="pucs.cas_auth.server"/>
             <argument/>
+            <argument>%pucs.cas_auth.server.ca_pem%</argument>
         </service>
         <service id="pucs.cas_auth.security.authentication.listener" class="Pucs\CasAuthBundle\Security\Firewall\CasListener" parent="security.authentication.listener.abstract" abstract="true">
         </service>

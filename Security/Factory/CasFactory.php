@@ -21,7 +21,7 @@ class CasFactory extends AbstractFactory
 
         $container
             ->setDefinition($providerId, new DefinitionDecorator('pucs.cas_auth.security.authentication.provider'))
-            ->replaceArgument(1, new Reference($userProvider));
+            ->replaceArgument(2, new Reference($userProvider));
 
         return $providerId;
     }
