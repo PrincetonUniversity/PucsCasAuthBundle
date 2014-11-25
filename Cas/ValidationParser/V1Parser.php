@@ -28,7 +28,7 @@ class V1Parser implements ParserInterface
                 $response->setUsername($username);
                 $response->setSuccess();
             } else {
-                $response->setFailure('Malformed data');
+                $response->setFailure('Malformed data received from CAS server.');
             }
         } else {
             $response->setFailure('Unknown failure');

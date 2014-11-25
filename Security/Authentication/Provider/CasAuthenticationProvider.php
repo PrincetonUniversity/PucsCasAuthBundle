@@ -3,6 +3,7 @@
 namespace Pucs\CasAuthBundle\Security\Authentication\Provider;
 
 use Pucs\CasAuthBundle\Cas\Validator\Validator;
+use Pucs\CasAuthBundle\Exception\ValidationException;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -44,7 +45,12 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
             return null;
         }
 
-        $validationData = $this->validator->validate($token->getCredentials(), $token->getCheckPath());
+        try {
+            $validationData = $this->validator->validate($token->getCredentials(), $token->getCheckPath());
+        } catch (ValidationException $e) {
+            throw new AuthenticationException('CAS validation failed: ' . $e->getMessage());
+        }
+
         if (!$validationData->isSuccess()) {
             throw new AuthenticationException('CAS validation failed: ' . $validationData->getFailureMessage());
         }

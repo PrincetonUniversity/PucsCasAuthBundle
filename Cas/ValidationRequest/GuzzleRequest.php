@@ -39,13 +39,13 @@ class GuzzleRequest extends AbstractRequest
             $this->guzzleClient->setSslVerification(false);
         }
 
-        $request = $this->guzzleClient->get($uri);
         try {
+            $request = $this->guzzleClient->get($uri);
             $response = $request->send();
-        } catch (RequestException $e) {
-            throw new ValidationException("Validation of CAS service ticked failed, request to CAS server failed: " . $e->getMessage());
-        }
 
-        return (string) $response->getBody();
+            return (string) $response->getBody();
+        } catch (RequestException $e) {
+            throw new ValidationException("Validation request to CAS server failed with message: " . $e->getMessage());
+        }
     }
 }
