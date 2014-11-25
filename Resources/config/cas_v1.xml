@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="pucs.cas_auth.protocol.v1" class="Pucs\CasAuthBundle\Cas\Protocol\V1Protocol">
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="router"/>
+            <argument>%pucs.cas_auth.server.base_server_uri%</argument>
+        </service>
+        <service id="pucs.cas_auth.protocol" alias="pucs.cas_auth.protocol.v1"/>
+        <service id="pucs.cas_auth.validation_parser.v1" class="Pucs\CasAuthBundle\Cas\ValidationParser\V1Parser"/>
+        <service id="pucs.cas_auth.validation_parser" alias="pucs.cas_auth.validation_parser.v1"/>
+    </services>
+</container>

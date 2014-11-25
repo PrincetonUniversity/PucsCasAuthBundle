@@ -27,11 +27,11 @@ class PucsCasAuthExtension extends Extension implements PrependExtensionInterfac
         $configuration = new Configuration();
         $processedConfig = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('pucs.cas_auth.server.version', $processedConfig['server']['version']);
-        $container->setParameter('pucs.cas_auth.server.login_url', $processedConfig['server']['login_url']);
-        $container->setParameter('pucs.cas_auth.server.logout_url', $processedConfig['server']['logout_url']);
-        $container->setParameter('pucs.cas_auth.server.validate_url', $processedConfig['server']['validate_url']);
+        $container->setParameter('pucs.cas_auth.server.base_server_uri', $processedConfig['server']['base_server_uri']);
         $container->setParameter('pucs.cas_auth.server.ca_pem', $processedConfig['server']['ca_pem']);
+
+        // Load the services we need for selected protocol version.
+        $loader->load('cas_v' . $processedConfig['server']['version'] . '.xml');
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Pucs\CasAuthBundle\Security\EntryPoint;
 
-use Pucs\CasAuthBundle\Cas\Server;
+use Pucs\CasAuthBundle\Cas\Protocol\ProtocolInterface;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,17 +19,17 @@ class CasEntryPoint implements AuthenticationEntryPointInterface
     protected $config;
 
     /**
-     * @var Server
+     * @var ProtocolInterface
      */
-    protected $casServer;
+    protected $protocol;
 
     /**
-     * @param Server $casServer
-     * @param array  $config
+     * @param ProtocolInterface $protocol
+     * @param array             $config
      */
-    public function __construct(Server $casServer, array $config)
+    public function __construct(ProtocolInterface $protocol, array $config)
     {
-        $this->casServer = $casServer;
+        $this->protocol = $protocol;
         $this->config = $config;
     }
 
@@ -38,6 +38,6 @@ class CasEntryPoint implements AuthenticationEntryPointInterface
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        return new RedirectResponse($this->casServer->getLoginUrl($this->config['check_path']));
+        return new RedirectResponse($this->protocol->getLoginUri($this->config['check_path']));
     }
 }
