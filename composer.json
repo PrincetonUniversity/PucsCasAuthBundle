@@ -1,10 +1,10 @@
 {
-    "name": "pucs/cas-auth-bundle",
+    "name": "pucs/cas-auth",
     "type": "symfony-bundle",
     "description": "CAS authentication provider for Symfony2.",
     "keywords": ["sso", "cas", "authentication"],
     "homepage": "https://github.com/PrincetonUniversity/PucsCasAuthBundle",
-    "license": "MIT",
+    "license": "BSD 3-Clause",
     "authors": [
         {
             "name": "Brian Osborne",
