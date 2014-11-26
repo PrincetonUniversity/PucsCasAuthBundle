@@ -3,7 +3,9 @@
 namespace Pucs\CasAuthBundle\Security\Authentication\Provider;
 
 use Pucs\CasAuthBundle\Cas\Validator\Validator;
+use Pucs\CasAuthBundle\Event\CasAuthenticationEvent;
 use Pucs\CasAuthBundle\Exception\ValidationException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -27,13 +29,20 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
     private $validator;
 
     /**
-     * @param Validator             $validator
-     * @param UserProviderInterface $userProvider
+     * @var EventDispatcherInterface
      */
-    public function __construct(Validator $validator, UserProviderInterface $userProvider)
+    private $eventDispatcher;
+
+    /**
+     * @param Validator                $validator
+     * @param UserProviderInterface    $userProvider
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(Validator $validator, UserProviderInterface $userProvider, EventDispatcherInterface $eventDispatcher)
     {
         $this->validator = $validator;
         $this->userProvider = $userProvider;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -49,6 +58,13 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
             $casLoginData = $this->validator->validate($token->getCredentials(), $token->getCheckPath());
         } catch (ValidationException $e) {
             throw new AuthenticationException('CAS validation failed: ' . $e->getMessage());
+        }
+
+        // If validaiton succeeded, then dispatch event with login data. This allows other bundles the
+        // opportunity to reject login or modify the login data.
+        if ($casLoginData->isSuccess()) {
+            $authenticationEvent = new CasAuthenticationEvent($casLoginData);
+            $this->eventDispatcher->dispatch('pucs.cas_auth.event.authentication', $authenticationEvent);
         }
 
         if (!$casLoginData->isSuccess()) {
