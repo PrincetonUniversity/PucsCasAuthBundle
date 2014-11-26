@@ -2,6 +2,8 @@
 
 namespace Pucs\CasAuthBundle\Cas\ValidationParser;
 
+use Pucs\CasAuthBundle\Cas\CasLoginData;
+
 /**
  * Class V2Parser
  */
@@ -12,14 +14,14 @@ class V2Parser implements ParserInterface
      *
      * @param string $content
      *
-     * @return ValidationResponse
+     * @return CasLoginData
      */
     public function parseResponse($content)
     {
         $dom = new \DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->encoding = "utf-8";
-        $response = new ValidationResponse();
+        $data = new CasLoginData();
 
         if (@$dom->loadXML($content) !== false) {
             $failureElements = $dom->getElementsByTagName('authenticationFailure');
@@ -30,27 +32,27 @@ class V2Parser implements ParserInterface
                     $successElement = $successElements->item(0);
                     $userElement = $successElement->getElementsByTagName("user");
                     if ($userElement->length == 1) {
-                        $response->setUsername($userElement->item(0)->nodeValue);
-                        $response->setSuccess();
+                        $data->setUsername($userElement->item(0)->nodeValue);
+                        $data->setSuccess();
                     } else {
-                        $response->setFailure('Malformed data');
+                        $data->setFailure('Malformed data');
                     }
                 } else {
                     // All reponses should have either an authenticationFailure
                     // or authenticationSuccess node.
-                    $response->setFailure('Malformed data');
+                    $data->setFailure('Malformed data');
                 }
             } else {
                 $failureElement = $failureElements->item(0);
                 $errorCode = $failureElement->getAttribute('code');
                 $errorMsg = $failureElement->nodeValue;
 
-                $response->setFailure('Error Code ' . trim($errorCode) . ': ' . trim($errorMsg));
+                $data->setFailure('Error Code ' . trim($errorCode) . ': ' . trim($errorMsg));
             }
         } else {
-            $response->setFailure('Malformed data');
+            $data->setFailure('Malformed data');
         }
 
-        return $response;
+        return $data;
     }
 }

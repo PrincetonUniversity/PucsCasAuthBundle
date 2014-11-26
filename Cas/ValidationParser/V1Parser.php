@@ -2,6 +2,8 @@
 
 namespace Pucs\CasAuthBundle\Cas\ValidationParser;
 
+use Pucs\CasAuthBundle\Cas\CasLoginData;
+
 /**
  * Class V1Parser
  */
@@ -12,28 +14,28 @@ class V1Parser implements ParserInterface
      *
      * @param string $content
      *
-     * @return ValidationResponse
+     * @return CasLoginData
      */
     public function parseResponse($content)
     {
-        $data = explode("\n", str_replace("\n\n", "\n", str_replace("\r", "\n", $content)));
-        $success = strtolower($data[0] === 'yes');
+        $splitContent = explode("\n", str_replace("\n\n", "\n", str_replace("\r", "\n", $content)));
+        $success = strtolower($splitContent[0] === 'yes');
 
-        $response = new ValidationResponse();
+        $data = new CasLoginData();
 
         if ($success) {
             // Extract the username from the message field and return it.
-            $username = (count($data) > 1 && $data[1]) ? $data[1] : null;
+            $username = (count($splitContent) > 1 && $splitContent[1]) ? $splitContent[1] : null;
             if ($username) {
-                $response->setUsername($username);
-                $response->setSuccess();
+                $data->setUsername($username);
+                $data->setSuccess();
             } else {
-                $response->setFailure('Malformed data received from CAS server.');
+                $data->setFailure('Malformed data received from CAS server.');
             }
         } else {
-            $response->setFailure('Unknown failure');
+            $data->setFailure('Unknown failure');
         }
 
-        return $response;
+        return $data;
     }
 }

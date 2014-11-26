@@ -1,11 +1,11 @@
 <?php
 
-namespace Pucs\CasAuthBundle\Cas\ValidationParser;
+namespace Pucs\CasAuthBundle\Cas;
 
 /**
- * Class ValidationResponse
+ * Class CasLoginData
  */
-class ValidationResponse
+class CasLoginData
 {
     protected $username, $success, $failureMessage;
 
@@ -30,7 +30,7 @@ class ValidationResponse
     }
 
     /**
-     * Returns if the validation was successful or not.
+     * Returns if user login successful or not.
      *
      * @return bool
      */
@@ -40,7 +40,7 @@ class ValidationResponse
     }
 
     /**
-     * Sets validation to successful.
+     * Sets user login to successful.
      */
     public function setSuccess()
     {
@@ -48,7 +48,7 @@ class ValidationResponse
     }
 
     /**
-     * Sets validation to failure.
+     * Sets user login to failure, along with a message.
      *
      * @param string $message
      */

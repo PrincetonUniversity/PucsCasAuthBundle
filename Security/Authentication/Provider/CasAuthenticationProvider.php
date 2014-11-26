@@ -46,17 +46,17 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
         }
 
         try {
-            $validationData = $this->validator->validate($token->getCredentials(), $token->getCheckPath());
+            $casLoginData = $this->validator->validate($token->getCredentials(), $token->getCheckPath());
         } catch (ValidationException $e) {
             throw new AuthenticationException('CAS validation failed: ' . $e->getMessage());
         }
 
-        if (!$validationData->isSuccess()) {
-            throw new AuthenticationException('CAS validation failed: ' . $validationData->getFailureMessage());
+        if (!$casLoginData->isSuccess()) {
+            throw new AuthenticationException('CAS validation failed: ' . $casLoginData->getFailureMessage());
         }
 
         try {
-            $user = $this->userProvider->loadUserByUsername($validationData->getUsername());
+            $user = $this->userProvider->loadUserByUsername($casLoginData->getUsername());
         } catch (UsernameNotFoundException $e) {
             // We can decide to obfuscate this error and provide a different one later on if we want.
             throw $e;

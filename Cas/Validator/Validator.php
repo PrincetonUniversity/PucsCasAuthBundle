@@ -44,7 +44,7 @@ class Validator
      * @param string $ticket
      * @param string $service
      *
-     * @return \Pucs\CasAuthBundle\Cas\ValidationParser\ValidationResponse
+     * @return \Pucs\CasAuthBundle\Cas\CasLoginData
      */
     public function validate($ticket, $service)
     {
