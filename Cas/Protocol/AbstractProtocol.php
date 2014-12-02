@@ -59,11 +59,6 @@ abstract class AbstractProtocol implements ProtocolInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public abstract function getValidationUri($ticket, $service);
-
-    /**
      * Construct a URL to the CAS server for the provided action.
      *
      * @param string $action

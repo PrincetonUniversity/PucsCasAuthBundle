@@ -19,9 +19,4 @@ abstract class AbstractRequest implements RequestInterface
     {
         $this->caPem = $caPem;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public abstract function sendValidationRequest($uri);
 }
