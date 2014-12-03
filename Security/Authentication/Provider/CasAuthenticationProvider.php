@@ -2,6 +2,7 @@
 
 namespace Pucs\CasAuthBundle\Security\Authentication\Provider;
 
+use Pucs\CasAuthBundle\Cas\CasLoginData;
 use Pucs\CasAuthBundle\Cas\Validator\Validator;
 use Pucs\CasAuthBundle\Event\CasAuthenticationEvent;
 use Pucs\CasAuthBundle\Exception\ValidationException;
@@ -54,22 +55,15 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
             return null;
         }
 
+        // Try to validate the token. The validator will populate an object containiner the username
+        // if successful.
         try {
             $casLoginData = $this->validator->validate($token->getCredentials(), $token->getCheckPath());
         } catch (ValidationException $e) {
             throw new AuthenticationException('CAS validation failed: ' . $e->getMessage());
         }
 
-        // If validaiton succeeded, then dispatch event with login data. This allows other bundles the
-        // opportunity to reject login or modify the login data.
-        if ($casLoginData->isSuccess()) {
-            $authenticationEvent = new CasAuthenticationEvent($casLoginData);
-            $this->eventDispatcher->dispatch('pucs.cas_auth.event.authentication', $authenticationEvent);
-        }
-
-        if (!$casLoginData->isSuccess()) {
-            throw new AuthenticationException('CAS validation failed: ' . $casLoginData->getFailureMessage());
-        }
+        $this->checkLoginFailure($casLoginData);
 
         try {
             $user = $this->userProvider->loadUserByUsername($casLoginData->getUsername());
@@ -77,6 +71,12 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
             // We can decide to obfuscate this error and provide a different one later on if we want.
             throw $e;
         }
+
+        // Dispatch event allowing others to modify the login data (possibly denying login)
+        $authenticationEvent = new CasAuthenticationEvent($casLoginData, $user);
+        $this->eventDispatcher->dispatch('pucs.cas_auth.event.authentication', $authenticationEvent);
+
+        $this->checkLoginFailure($casLoginData);
 
         $authenticatedToken = new CasUserToken($token->getCredentials(), $token->getCheckPath(), $user->getRoles());
         $authenticatedToken->setUser($user);
@@ -90,5 +90,17 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
     public function supports(TokenInterface $token)
     {
         return $token instanceof CasUserToken;
+    }
+
+    /**
+     * Inspects login data object for a failure and throws exception if needed.
+     *
+     * @param CasLoginData $loginData
+     */
+    private function checkLoginFailure(CasLoginData $loginData)
+    {
+        if (!$loginData->isSuccess()) {
+            throw new AuthenticationException('CAS validation failed: ' . $casLoginData->getFailureMessage());
+        }
     }
 }
