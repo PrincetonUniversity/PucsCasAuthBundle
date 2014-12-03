@@ -100,7 +100,7 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
     private function checkLoginFailure(CasLoginData $loginData)
     {
         if (!$loginData->isSuccess()) {
-            throw new AuthenticationException('CAS validation failed: ' . $casLoginData->getFailureMessage());
+            throw new AuthenticationException('CAS validation failed: ' . $loginData->getFailureMessage());
         }
     }
 }
