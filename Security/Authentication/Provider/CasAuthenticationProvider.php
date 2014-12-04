@@ -80,6 +80,7 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
 
         $authenticatedToken = new CasUserToken($token->getCredentials(), $token->getCheckPath(), $user->getRoles());
         $authenticatedToken->setUser($user);
+        $authenticatedToken->setAuthenticated(true);
 
         return $authenticatedToken;
     }

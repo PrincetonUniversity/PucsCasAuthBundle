@@ -30,9 +30,6 @@ class CasUserToken extends AbstractToken
 
         $this->serviceTicket = $serviceTicket;
         $this->checkPath = $checkPath;
-
-        // If the user has roles, consider it authenticated.
-        $this->setAuthenticated(count($roles) > 0);
     }
 
     /**
