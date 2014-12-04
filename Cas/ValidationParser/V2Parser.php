@@ -35,22 +35,22 @@ class V2Parser implements ParserInterface
                         $data->setUsername($userElement->item(0)->nodeValue);
                         $data->setSuccess();
                     } else {
-                        $data->setFailure('Malformed data');
+                        $data->setFailure('Malformed CAS validation data.');
                     }
                 } else {
                     // All reponses should have either an authenticationFailure
                     // or authenticationSuccess node.
-                    $data->setFailure('Malformed data');
+                    $data->setFailure('Malformed CAS validation data.');
                 }
             } else {
                 $failureElement = $failureElements->item(0);
                 $errorCode = $failureElement->getAttribute('code');
                 $errorMsg = $failureElement->nodeValue;
 
-                $data->setFailure('Error Code ' . trim($errorCode) . ': ' . trim($errorMsg));
+                $data->setFailure('CAS Validation error: ' . trim($errorCode) . ': ' . trim($errorMsg));
             }
         } else {
-            $data->setFailure('Malformed data');
+            $data->setFailure('Malformed CAS validation data.');
         }
 
         return $data;

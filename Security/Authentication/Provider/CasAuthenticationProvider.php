@@ -60,7 +60,7 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
         try {
             $casLoginData = $this->validator->validate($token->getCredentials(), $token->getCheckPath());
         } catch (ValidationException $e) {
-            throw new AuthenticationException('CAS validation failed: ' . $e->getMessage());
+            throw new AuthenticationException($e->getMessage());
         }
 
         $this->checkLoginFailure($casLoginData);
@@ -101,7 +101,7 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
     private function checkLoginFailure(CasLoginData $loginData)
     {
         if (!$loginData->isSuccess()) {
-            throw new AuthenticationException('CAS validation failed: ' . $loginData->getFailureMessage());
+            throw new AuthenticationException($loginData->getFailureMessage());
         }
     }
 }
