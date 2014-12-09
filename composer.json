@@ -1,5 +1,5 @@
 {
-    "name": "pucs/cas-auth",
+    "name": "pucs/cas-auth-bundle",
     "type": "symfony-bundle",
     "description": "CAS authentication provider for Symfony2.",
     "keywords": ["sso", "cas", "authentication"],
