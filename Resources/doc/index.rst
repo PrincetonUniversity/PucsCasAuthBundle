@@ -45,14 +45,13 @@ file of your project::
 
         // ...
     }
-    ```
 
 Notice that we're adding the `guzzle bundle`_.
 
 .. _`guzzle bundle`: https://github.com/misd-service-development/guzzle-bundle
 
-Step 3: Firewall Configuration
-------------------------------
+Firewall Configuration
+======================
 
 Add the new ``cas`` authentication provider and options to your firewall::
 
