@@ -15,7 +15,7 @@ In your project's ``composer.json`` file, add this to your require block::
 
     {
         "require": {
-            "pucs/cas-auth-bundle": "*"
+            "pucs/cas-auth-bundle": "dev-master"
         }
     }
 
