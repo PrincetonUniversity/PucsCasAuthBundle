@@ -3,7 +3,9 @@ Overview
 
 This bundle provides an authentication provider to the Symfony Security Component.
 If you are unfamiliar with how authentication and authorization works in Symfony,
-read about it [here](http://symfony.com/doc/current/book/security.html).
+`read about it`_.
+
+.. _`read about it`: http://symfony.com/doc/current/book/security.html
 
 Installation
 ============
@@ -45,7 +47,9 @@ file of your project::
     }
     ```
 
-Notice that we're adding the [guzzle bundle](https://github.com/misd-service-development/guzzle-bundle) as well.
+Notice that we're adding the `guzzle bundle`_.
+
+.. _`guzzle bundle`: https://github.com/misd-service-development/guzzle-bundle
 
 Step 3: Firewall Configuration
 ------------------------------
@@ -62,7 +66,9 @@ Add the new ``cas`` authentication provider and options to your firewall::
                     check_path: ~
 
 The only required options are ``login_path`` and ``check_path``. Optional options are listed
-below. Descriptions of each can be found in the [security documentation](http://symfony.com/doc/current/reference/configuration/security.html).
+below. Descriptions of each can be found in the `security documentation`_.
+
+.. _`security documentation`: http://symfony.com/doc/current/reference/configuration/security.html
 
 * ``always_use_default_target_path``
 * ``default_target_path``
