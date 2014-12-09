@@ -167,7 +167,7 @@ class CasListener implements ListenerInterface
         }
 
         $token = $this->securityContext->getToken();
-        if ($token instanceof CasUserToken && $this->providerKey === $token->getProviderKey()) {
+        if ($token instanceof CasUserToken) {
             $this->securityContext->setToken(null);
         }
 
