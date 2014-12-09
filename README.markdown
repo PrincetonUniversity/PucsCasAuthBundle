@@ -14,5 +14,3 @@ License
 
 This software is licensed with [BSD 3-Clause](http://opensource.org/licenses/BSD-3-Clause).
 The license file is located in ``Resouces/meta/LICENSE``.
-
-
