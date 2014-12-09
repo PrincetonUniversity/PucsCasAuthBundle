@@ -7,14 +7,12 @@ Specifically, an authentication provider is defined by this bundle to extend the
 Documentation
 =============
 
-Installation and configuration details are in documentation located in:
-
-``Resources/meta/index.rst``
+Installation and configuration details are in the [documentation](https://github.com/PrincetonUniversity/PucsCasAuthBundle/blob/master/Resources/doc/index.rst).
 
 License
 =======
 
 This software is licensed with [BSD 3-Clause](http://opensource.org/licenses/BSD-3-Clause).
-The license file is located in:
+The license file is located in ``Resouces/meta/LICENSE``.
 
-``Resouces/meta/LICENSE``
+
