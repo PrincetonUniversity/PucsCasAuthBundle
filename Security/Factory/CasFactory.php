@@ -12,6 +12,7 @@
 namespace Pucs\CasAuthBundle\Security\Factory;
 
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
@@ -30,7 +31,8 @@ class CasFactory extends AbstractFactory
 
         $container
             ->setDefinition($providerId, new DefinitionDecorator('pucs.cas_auth.security.authentication.provider'))
-            ->replaceArgument(1, new Reference($userProvider));
+            ->replaceArgument(1, new Reference($userProvider))
+            ->replaceArgument(3, $config['create_users']);
 
         return $providerId;
     }
@@ -48,7 +50,7 @@ class CasFactory extends AbstractFactory
      */
     protected function createEntryPoint($container, $id, $config, $defaultEntryPointId)
     {
-        $entryPointId = 'security.authentication.entry_point.'  . $id;
+        $entryPointId = 'security.authentication.entry_point.' . $id;
 
         // Create a service for our custom entry point based on our existing "template", and pass
         // in the factory config as an additional argument.
@@ -57,6 +59,21 @@ class CasFactory extends AbstractFactory
             ->addArgument($config);
 
         return $entryPointId;
+    }
+
+    /**
+     * @param NodeDefinition $node
+     */
+    public function addConfiguration(NodeDefinition $node)
+    {
+        parent::addConfiguration($node);
+
+        $builder = $node->children();
+
+        $builder
+            ->booleanNode('create_users')
+                ->defaultFalse()
+            ->end();
     }
 
     /**

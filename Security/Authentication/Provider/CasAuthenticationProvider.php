@@ -11,6 +11,7 @@
 
 namespace Pucs\CasAuthBundle\Security\Authentication\Provider;
 
+use BeSimple\SsoAuthBundle\Security\Core\User\UserFactoryInterface;
 use Pucs\CasAuthBundle\Cas\CasLoginData;
 use Pucs\CasAuthBundle\Cas\Validator\Validator;
 use Pucs\CasAuthBundle\Event\CasAuthenticationEvent;
@@ -18,7 +19,9 @@ use Pucs\CasAuthBundle\Exception\ValidationException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Pucs\CasAuthBundle\Authentication\Token\CasUserToken;
@@ -44,15 +47,22 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
     private $eventDispatcher;
 
     /**
+     * @var bool
+     */
+    private $createUsers;
+
+    /**
      * @param Validator                $validator
      * @param UserProviderInterface    $userProvider
      * @param EventDispatcherInterface $eventDispatcher
+     * @param bool                     $createUsers
      */
-    public function __construct(Validator $validator, UserProviderInterface $userProvider, EventDispatcherInterface $eventDispatcher)
+    public function __construct(Validator $validator, UserProviderInterface $userProvider, EventDispatcherInterface $eventDispatcher, $createUsers = false)
     {
         $this->validator = $validator;
         $this->userProvider = $userProvider;
         $this->eventDispatcher = $eventDispatcher;
+        $this->createUsers = $createUsers;
     }
 
     /**
@@ -64,8 +74,7 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
             return null;
         }
 
-        // Try to validate the token. The validator will populate an object containiner the username
-        // if successful.
+        // Try to validate the token. The validator will return an object containing the username if successful.
         try {
             $casLoginData = $this->validator->validate($token->getCredentials(), $token->getCheckPath());
         } catch (ValidationException $e) {
@@ -75,10 +84,13 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
         $this->checkLoginFailure($casLoginData);
 
         try {
-            $user = $this->userProvider->loadUserByUsername($casLoginData->getUsername());
-        } catch (UsernameNotFoundException $e) {
-            // We can decide to obfuscate this error and provide a different one later on if we want.
-            throw $e;
+            $user = $this->retrieveUser($casLoginData->getUsername());
+        } catch (UsernameNotFoundException $notFound) {
+            if ($this->createUsers) {
+                $user = $this->createUser($casLoginData->getUsername());
+            } else {
+                throw $notFound;
+            }
         }
 
         // Dispatch event allowing others to modify the login data (possibly denying login)
@@ -107,10 +119,59 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
      *
      * @param CasLoginData $loginData
      */
-    private function checkLoginFailure(CasLoginData $loginData)
+    protected function checkLoginFailure(CasLoginData $loginData)
     {
         if (!$loginData->isSuccess()) {
             throw new AuthenticationException($loginData->getFailureMessage());
         }
+    }
+
+    /**
+     * Lookup and return a user object based on username.
+     *
+     * @param string $username
+     *
+     * @return UserInterface
+     */
+    protected function retrieveUser($username)
+    {
+        try {
+            $user = $this->userProvider->loadUserByUsername($username);
+            if (!$user instanceof UserInterface) {
+                throw new AuthenticationServiceException('The user provider must return an UserInterface object.');
+            }
+        } catch (UsernameNotFoundException $notFound) {
+            throw $notFound;
+        } catch (\Exception $repositoryProblem) {
+            throw new AuthenticationServiceException($repositoryProblem->getMessage(), 0, $repositoryProblem);
+        }
+
+        return $user;
+    }
+
+    /**
+     * Create a user with the provided username.
+     *
+     * @param string $username
+     *
+     * @return UserInterface $user
+     */
+    protected function createUser($username)
+    {
+        if (!$this->userProvider instanceof UserFactoryInterface) {
+            throw new AuthenticationServiceException("UserProvider must implement UserFactoryInterface to create unknown users.");
+        }
+
+        try {
+            $user = $this->userProvider->createUser($username, array(), array());
+
+            if (!$user instanceof UserInterface) {
+                throw new AuthenticationServiceException("The user provider must return a UserInterface object.");
+            }
+        } catch (\Exception $repositoryProblem) {
+            throw new AuthenticationServiceException($repositoryProblem->getMessage(), 0, $repositoryProblem);
+        }
+
+        return $user;
     }
 }

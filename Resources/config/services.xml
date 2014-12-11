@@ -20,6 +20,7 @@
             <argument type="service" id="pucs.cas_auth.validator"/>
             <argument/>
             <argument type="service" id="event_dispatcher"/>
+            <argument/>
         </service>
         <service id="pucs.cas_auth.security.authentication.listener" class="Pucs\CasAuthBundle\Security\Firewall\CasListener" parent="security.authentication.listener.abstract" abstract="true"/>
         <service id="pucs.cas_auth.security.authentication.entry_point" class="Pucs\CasAuthBundle\Security\EntryPoint\CasEntryPoint" abstract="true" public="false">

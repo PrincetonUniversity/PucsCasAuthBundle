@@ -64,8 +64,9 @@ Add the new ``cas`` authentication provider and options to your firewall::
                     login_path: ~
                     check_path: ~
 
-The only required options are ``login_path`` and ``check_path``. Optional options are listed
-below. Descriptions of each can be found in the `security documentation`_.
+The only required options are ``login_path`` and ``check_path``.
+There are also several other options that are defined by the Security Component that you can specify.
+They are listed below, and descriptions of each can be found in the `security documentation`_.
 
 .. _`security documentation`: http://symfony.com/doc/current/reference/configuration/security.html
 
@@ -77,6 +78,10 @@ below. Descriptions of each can be found in the `security documentation`_.
 * ``failure_path_forward``
 * ``failure_path_parameter``
 * ``require_previous_session``
+
+This bundle provides extra options as well:
+
+* ``create_users``: When ``true``, users that don't exist (in your ``UserProvider``) will be created during login.
 
 Bundle Configuration
 ====================
