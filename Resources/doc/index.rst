@@ -92,16 +92,16 @@ Configure the bundle in your apps configuration file like so::
         server:
             version: ~
             base_server_uri: ~
-            ca_pem: ~
+            ca_validation: ~
 
 ``version`` must be either ``1`` or ``2`` and corresponds with your CAS server protocol version.
 
 ``base_server_uri`` is the location of your CAS server, like ``https://sample.com/cas``
 
-``ca_pem`` is the path to the PEM file of the TLS certificate on your CAS server.
-This is used to authenticate the validity of the CAS server. If you don't specify
-this option, the certificate is not verified to be authentic (not recommended
-for production)
+``ca_validation`` indicates how validation of the TLS certificate of your CAS server is handled.
+When ``true``, it will use a default cert chain (that mozilla provides) and verify authenticity of
+the certificate as well as the host. When ``false``, no verification is done at all. You can also
+specify the path on your server to your own certificate file for validating the certificate authority.
 
 Usage
 =====
