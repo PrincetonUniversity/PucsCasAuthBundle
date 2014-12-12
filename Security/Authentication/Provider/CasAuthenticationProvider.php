@@ -11,7 +11,7 @@
 
 namespace Pucs\CasAuthBundle\Security\Authentication\Provider;
 
-use BeSimple\SsoAuthBundle\Security\Core\User\UserFactoryInterface;
+use Pucs\CasAuthBundle\Security\UserFactoryInterface;
 use Pucs\CasAuthBundle\Cas\CasLoginData;
 use Pucs\CasAuthBundle\Cas\Validator\Validator;
 use Pucs\CasAuthBundle\Event\CasAuthenticationEvent;
@@ -163,7 +163,7 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
         }
 
         try {
-            $user = $this->userProvider->createUser($username, array(), array());
+            $user = $this->userProvider->createUser($username);
 
             if (!$user instanceof UserInterface) {
                 throw new AuthenticationServiceException("The user provider must return a UserInterface object.");
