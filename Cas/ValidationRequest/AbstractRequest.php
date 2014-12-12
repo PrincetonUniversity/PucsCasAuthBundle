@@ -17,15 +17,15 @@ namespace Pucs\CasAuthBundle\Cas\ValidationRequest;
 abstract class AbstractRequest implements RequestInterface
 {
     /**
-     * @var string
+     * @var mixed
      */
-    protected $caPem;
+    protected $serverCaValidation;
 
     /**
-     * @param string $caPem
+     * @param mixed $serverCaValidation
      */
-    public function __construct($caPem)
+    public function __construct($serverCaValidation)
     {
-        $this->caPem = $caPem;
+        $this->serverCaValidation = $serverCaValidation;
     }
 }

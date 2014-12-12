@@ -33,7 +33,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->integerNode('version')->isRequired()->end()
                         ->scalarNode('base_server_uri')->isRequired()->end()
-                        ->scalarNode('ca_pem')->defaultNull()->end()
+                        ->scalarNode('ca_validation')->defaultTrue()->end()
                     ->end()
                 ->end()
             ->end();

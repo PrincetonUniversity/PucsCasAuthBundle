@@ -26,12 +26,12 @@ class GuzzleRequest extends AbstractRequest
     protected $guzzleClient;
 
     /**
-     * @param string       $caPem
      * @param GuzzleClient $guzzleClient
+     * @param mixed        $serverCaValidation
      */
-    public function __construct($caPem, GuzzleClient $guzzleClient)
+    public function __construct(GuzzleClient $guzzleClient, $serverCaValidation)
     {
-        parent::__construct($caPem);
+        parent::__construct($serverCaValidation);
         $this->guzzleClient = $guzzleClient;
     }
 
@@ -40,13 +40,7 @@ class GuzzleRequest extends AbstractRequest
      */
     public function sendValidationRequest($uri)
     {
-        // If user provided a CA PEM file to verify the CAS server, attach it to request.
-        // Otherwise we don't perform any validation.
-        if (!empty($this->caPem)) {
-            $this->guzzleClient->setSslVerification($this->caPem);
-        } else {
-            $this->guzzleClient->setSslVerification(false);
-        }
+        $this->guzzleClient->setSslVerification($this->serverCaValidation);
 
         try {
             $request = $this->guzzleClient->get($uri);

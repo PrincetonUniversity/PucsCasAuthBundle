@@ -8,8 +8,8 @@
     </parameters>
     <services>
         <service id="pucs.cas_auth.validation_requestor" class="Pucs\CasAuthBundle\Cas\ValidationRequest\GuzzleRequest">
-            <argument>%pucs.cas_auth.server.ca_pem%</argument>
             <argument type="service" id="guzzle.client"/>
+            <argument>%pucs.cas_auth.server.ca_validation%</argument>
         </service>
         <service id="pucs.cas_auth.validator" class="Pucs\CasAuthBundle\Cas\Validator\Validator">
             <argument type="service" id="pucs.cas_auth.protocol"/>
