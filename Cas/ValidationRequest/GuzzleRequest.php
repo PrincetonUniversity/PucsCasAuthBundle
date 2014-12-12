@@ -40,9 +40,8 @@ class GuzzleRequest extends AbstractRequest
      */
     public function sendValidationRequest($uri)
     {
-        $this->guzzleClient->setSslVerification($this->serverCaValidation);
-
         try {
+            $this->guzzleClient->setSslVerification($this->serverCaValidation);
             $request = $this->guzzleClient->get($uri);
             $response = $request->send();
 
