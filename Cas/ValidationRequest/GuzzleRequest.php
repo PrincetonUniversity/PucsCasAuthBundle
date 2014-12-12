@@ -11,8 +11,8 @@
 
 namespace Pucs\CasAuthBundle\Cas\ValidationRequest;
 
+use Guzzle\Common\Exception\RuntimeException;
 use Guzzle\Http\Client as GuzzleClient;
-use Guzzle\Http\Exception\RequestException;
 use Pucs\CasAuthBundle\Exception\ValidationException;
 
 /**
@@ -47,7 +47,7 @@ class GuzzleRequest extends AbstractRequest
             $response = $request->send();
 
             return (string) $response->getBody();
-        } catch (RequestException $e) {
+        } catch (RuntimeException $e) {
             throw new ValidationException("Validation request to CAS server failed with message: " . $e->getMessage());
         }
     }
