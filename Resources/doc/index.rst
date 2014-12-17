@@ -38,7 +38,7 @@ file of your project::
 
         $bundles = array(
             // ...
-            new Pucs\CasAuth\PucsCasAuthBundle(),
+            new Pucs\CasAuthBundle\PucsCasAuthBundle(),
             new Misd\GuzzleBundle\MisdGuzzleBundle(),
             // ...
         );
