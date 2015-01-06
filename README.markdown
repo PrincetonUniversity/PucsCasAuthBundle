@@ -9,6 +9,13 @@ Documentation
 
 Installation and configuration details are in the [documentation](https://github.com/PrincetonUniversity/PucsCasAuthBundle/blob/master/Resources/doc/index.rst).
 
+The project is maintained on [Github](https://github.com/PrincetonUniversity/PucsCasAuthBundle). Check there for updates.
+
+Work in Progress
+================
+While this bundle is being used in production apps, it does not yet have a test suite and the composer dependencies are
+not completely defined yet.
+
 License
 =======
 
