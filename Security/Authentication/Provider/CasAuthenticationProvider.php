@@ -162,14 +162,9 @@ class CasAuthenticationProvider implements AuthenticationProviderInterface
             throw new AuthenticationServiceException("UserProvider must implement UserFactoryInterface to create unknown users.");
         }
 
-        try {
-            $user = $this->userProvider->createUser($username);
-
-            if (!$user instanceof UserInterface) {
-                throw new AuthenticationServiceException("The user provider must return a UserInterface object.");
-            }
-        } catch (\Exception $repositoryProblem) {
-            throw new AuthenticationServiceException($repositoryProblem->getMessage(), 0, $repositoryProblem);
+        $user = $this->userProvider->createUser($username);
+        if (!$user instanceof UserInterface) {
+            throw new AuthenticationServiceException("The user provider must return a UserInterface object.");
         }
 
         return $user;
