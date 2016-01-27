@@ -12,6 +12,8 @@
 namespace Pucs\CasAuthBundle\Security\Firewall;
 
 use Pucs\CasAuthBundle\Authentication\Token\CasUserToken;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
@@ -43,7 +45,7 @@ class CasListener implements ListenerInterface
     protected $providerKey;
     protected $httpUtils;
 
-    private $securityContext;
+    private $tokenStorage;
     private $sessionStrategy;
     private $dispatcher;
     private $successHandler;
@@ -53,7 +55,7 @@ class CasListener implements ListenerInterface
     /**
      * Constructor.
      *
-     * @param SecurityContextInterface               $securityContext       A SecurityContext instance
+     * @param TokenStorageInterface                  $tokenStorage          A TokenStorage instance
      * @param AuthenticationManagerInterface         $authenticationManager An AuthenticationManagerInterface instance
      * @param SessionAuthenticationStrategyInterface $sessionStrategy
      * @param HttpUtils                              $httpUtils             An HttpUtilsInterface instance
@@ -67,29 +69,29 @@ class CasListener implements ListenerInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(SecurityContextInterface $securityContext, AuthenticationManagerInterface $authenticationManager, SessionAuthenticationStrategyInterface $sessionStrategy, HttpUtils $httpUtils, $providerKey, AuthenticationSuccessHandlerInterface $successHandler, AuthenticationFailureHandlerInterface $failureHandler, array $options = array(), LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null)
+    public function __construct(TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager, SessionAuthenticationStrategyInterface $sessionStrategy, HttpUtils $httpUtils, $providerKey, AuthenticationSuccessHandlerInterface $successHandler, AuthenticationFailureHandlerInterface $failureHandler, array $options = array(), LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null)
     {
         if (empty($providerKey)) {
             throw new \InvalidArgumentException('$providerKey must not be empty.');
         }
 
-        $this->securityContext = $securityContext;
+        $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->sessionStrategy = $sessionStrategy;
         $this->providerKey = $providerKey;
         $this->successHandler = $successHandler;
         $this->failureHandler = $failureHandler;
         $this->options = array_merge(array(
-                'check_path'                     => '/login_check',
-                'login_path'                     => '/login',
-                'always_use_default_target_path' => false,
-                'default_target_path'            => '/',
-                'target_path_parameter'          => '_target_path',
-                'use_referer'                    => false,
-                'failure_path'                   => null,
-                'failure_forward'                => false,
-                'require_previous_session'       => true,
-            ), $options);
+            'check_path'                     => '/login_check',
+            'login_path'                     => '/login',
+            'always_use_default_target_path' => false,
+            'default_target_path'            => '/',
+            'target_path_parameter'          => '_target_path',
+            'use_referer'                    => false,
+            'failure_path'                   => null,
+            'failure_forward'                => false,
+            'require_previous_session'       => true,
+        ), $options);
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
         $this->httpUtils = $httpUtils;
@@ -175,9 +177,9 @@ class CasListener implements ListenerInterface
             $this->logger->info(sprintf('Authentication request failed: %s', $failed->getMessage()));
         }
 
-        $token = $this->securityContext->getToken();
+        $token = $this->tokenStorage->getToken();
         if ($token instanceof CasUserToken) {
-            $this->securityContext->setToken(null);
+            $this->tokenStorage->setToken(null);
         }
 
         $response = $this->failureHandler->onAuthenticationFailure($request, $failed);
@@ -195,11 +197,11 @@ class CasListener implements ListenerInterface
             $this->logger->info(sprintf('User "%s" has been authenticated successfully', $token->getUsername()));
         }
 
-        $this->securityContext->setToken($token);
+        $this->tokenStorage->setToken($token);
 
         $session = $request->getSession();
-        $session->remove(SecurityContextInterface::AUTHENTICATION_ERROR);
-        $session->remove(SecurityContextInterface::LAST_USERNAME);
+        $session->remove(Security::AUTHENTICATION_ERROR);
+        $session->remove(Security::LAST_USERNAME);
 
         if (null !== $this->dispatcher) {
             $loginEvent = new InteractiveLoginEvent($request, $token);
