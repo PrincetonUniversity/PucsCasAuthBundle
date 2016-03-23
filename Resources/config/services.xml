@@ -4,7 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
         <parameter key="pucs.cas_auth.server.base_server_uri"/>
-        <parameter key="pucs.cas_auth.server.ca_pem"/>
+        <parameter key="pucs.cas_auth.server.ca_validation"/>
     </parameters>
     <services>
         <service id="pucs.cas_auth.validation_requestor" class="Pucs\CasAuthBundle\Cas\ValidationRequest\GuzzleRequest">

@@ -11,8 +11,9 @@
 
 namespace Pucs\CasAuthBundle\Cas\ValidationRequest;
 
-use Guzzle\Common\Exception\RuntimeException;
-use Guzzle\Http\Client as GuzzleClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Pucs\CasAuthBundle\Exception\ValidationException;
 
 /**
@@ -20,19 +21,16 @@ use Pucs\CasAuthBundle\Exception\ValidationException;
  */
 class GuzzleRequest extends AbstractRequest
 {
-    /**
-     * @var GuzzleClient
-     */
-    protected $guzzleClient;
+    private $client;
 
     /**
-     * @param GuzzleClient $guzzleClient
-     * @param mixed        $serverCaValidation
+     * @param Client $client
+     * @param mixed  $serverCaValidation
      */
-    public function __construct(GuzzleClient $guzzleClient, $serverCaValidation)
+    public function __construct(Client $client, $serverCaValidation)
     {
         parent::__construct($serverCaValidation);
-        $this->guzzleClient = $guzzleClient;
+        $this->client = $client;
     }
 
     /**
@@ -40,14 +38,22 @@ class GuzzleRequest extends AbstractRequest
      */
     public function sendValidationRequest($uri)
     {
-        try {
-            $this->guzzleClient->setSslVerification($this->serverCaValidation);
-            $request = $this->guzzleClient->get($uri);
-            $response = $request->send();
+        $request = $this->client->createRequest('GET', $uri, array(
+            'verify' => $this->serverCaValidation,
+        ));
 
-            return (string) $response->getBody();
-        } catch (RuntimeException $e) {
-            throw new ValidationException("Validation request to CAS server failed with message: " . $e->getMessage());
+        try {
+            $response = $this->client->send($request);
+
+            if ($response->getStatusCode() == "200") {
+                return $response->getBody();
+            } else {
+                throw new ValidationException('Received invalid status code of "' . $response->getStatusCode() . '" when making CAS validation request.');
+            }
+        } catch (ClientException $e) {
+            throw new ValidationException('Received a ClientException when making CAS validation request: ' . $e->getMessage(), 0, $e);
+        } catch (ServerException $e) {
+            throw new ValidationException('Received a ServerException when making CAS validation request: ' . $e->getMessage(), 0, $e);
         }
     }
 }
