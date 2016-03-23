@@ -17,7 +17,7 @@ In your project's ``composer.json`` file, add this to your require block::
 
     {
         "require": {
-            "pucs/cas-auth-bundle": "dev-master"
+            "pucs/cas-auth-bundle": "2.x-dev"
         }
     }
 
@@ -39,7 +39,7 @@ file of your project::
         $bundles = array(
             // ...
             new Pucs\CasAuthBundle\PucsCasAuthBundle(),
-            new Misd\GuzzleBundle\MisdGuzzleBundle(),
+            new EightPoints\Bundle\GuzzleBundle\GuzzleBundle(),
             // ...
         );
 
@@ -48,7 +48,7 @@ file of your project::
 
 Notice that we're adding the `guzzle bundle`_.
 
-.. _`guzzle bundle`: https://github.com/misd-service-development/guzzle-bundle
+.. _`guzzle bundle`: https://github.com/8p/GuzzleBundle
 
 Firewall Configuration
 ======================
